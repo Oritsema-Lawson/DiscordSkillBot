@@ -17,12 +17,12 @@ namespace SkillBot
         public ulong ServerID { get; private set; }
 
         // Gets program directory
-        public string? currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public string? treeDirectory = Program.treeDir;
 
         // Reads bot token and prefix from the "config.json" file
         public async Task ReadConfig()
         {
-            string _path = Path.Combine(currentDir, "config.json");
+            string _path = Path.Combine(Program.currentDir, "config.json");
 
             if(!File.Exists(_path))
             {
@@ -56,44 +56,43 @@ namespace SkillBot
 
                 this.Token = data.token;
                 this.Prefix = data.prefix;
-                this.ServerID = data.serverID;
             }
         }
 
         // Reads Tree from JSON 
-        public async Task<Tree> ReadTree(Tree tree)
+        public async Task<Tree> ReadTree(ulong ID)
         {
             Console.WriteLine("[JSONUTILITY] Reading Tree...");
 
             try
             {
-                using (StreamReader reader = new StreamReader(Path.Combine(currentDir, $"{tree.treeName}.json"))) 
+                using (StreamReader reader = new StreamReader(Path.Combine(Program.treeDir, $"{ID}.json"))) 
                 {
                     string json = await reader.ReadToEndAsync();
-                    Console.WriteLine(json); 
+                    //Console.WriteLine(json); 
                     return JsonConvert.DeserializeObject<Tree>(json);
                 }
             }
             catch
             {
-                Console.WriteLine("[JSONUTILITY] Failed to read tree.");
+                Console.WriteLine("[JSONUTILITY] Failed to read tree... Writing...");
 
                 // Return an empty Tree if reading fails 
-                Tree newTree = new Tree(){ treeName = $"{tree.treeName}" };
-                await WriteTree(newTree);
+                Tree newTree = new Tree();
+                await WriteTree(ID, newTree);
                 return newTree;
             }
         }
 
         // Writes Tree to a JSON file
-        public async Task WriteTree(Tree tree)
+        public async Task WriteTree(ulong ID, Tree tree)
         {
             await Task.Run(() => 
             {
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Formatting = Formatting.Indented; 
 
-                using (StreamWriter sw = new StreamWriter(Path.Combine(currentDir, $"{tree.treeName}.json"), false))
+                using (StreamWriter sw = new StreamWriter(Path.Combine(treeDirectory, $"{ID}.json"), false))
                 using (JsonTextWriter writer = new JsonTextWriter(sw))
                 {
                     writer.Indentation = 4; 
@@ -102,6 +101,8 @@ namespace SkillBot
                     serializer.Serialize(writer, tree);
                 }
             });  
+
+            Console.WriteLine($"[JSONUTILITY] Tree {ID}.json has been written!");
         }
     }
 
@@ -110,6 +111,5 @@ namespace SkillBot
     {
         public string token = "$TOKEN";
         public string prefix = "$PREFIX";
-        public ulong serverID = 0;
     }
 }

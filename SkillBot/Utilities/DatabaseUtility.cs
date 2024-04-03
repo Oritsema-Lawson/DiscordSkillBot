@@ -12,14 +12,10 @@ namespace SkillBot
 {
     class DatabaseUtility
     {
-        public string? currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        public string databaseName = "users.db";
-        public string connectionString = "";
-
-        public async Task InitializeDB()
+        public async Task<string> InitializeDB(ulong serverID)
         {
-            string databasePath = Path.Combine(currentDir, databaseName); 
-            connectionString = $"Data Source={databasePath}; Version=3;";
+            string databasePath = Path.Combine(Program.dbDir, $"{serverID}.db"); 
+            string connectionString = $"Data Source={Path.Combine(Program.dbDir, $"{serverID}.db")}; Version=3;";
 
             if(!File.Exists(databasePath))
             {
@@ -35,10 +31,13 @@ namespace SkillBot
                     await createTableCommand.ExecuteNonQueryAsync();
                 }
             }
+
+            return connectionString;
         }
 
-        public async Task AddBranchColumn(string branchName)
+        public async Task AddBranchColumn(string branchName, ulong serverID)
         {
+            string connectionString = $"Data Source={Path.Combine(Program.dbDir, $"{serverID}.db")}; Version=3;";
             using (var connection = new SQLiteConnection(connectionString))
             {
                 await connection.OpenAsync();
@@ -49,8 +48,9 @@ namespace SkillBot
             }
         }
 
-        public async Task AddUserIfNotExists(ulong userId) 
+        public async Task AddUserIfNotExists(ulong userId, ulong serverID) 
         {
+            string connectionString = $"Data Source={Path.Combine(Program.dbDir, $"{serverID}.db")}; Version=3;";
             using (var connection = new SQLiteConnection(connectionString))
             {
                 await connection.OpenAsync();
@@ -68,8 +68,9 @@ namespace SkillBot
             }
         }
 
-        public async Task<int> GetSkillPoints(ulong userId)
+        public async Task<int> GetSkillPoints(ulong userId, ulong serverID)
         {
+            string connectionString = $"Data Source={Path.Combine(Program.dbDir, $"{serverID}.db")}; Version=3;";
             using (var connection = new SQLiteConnection(connectionString))
             {
                 await connection.OpenAsync();
@@ -82,8 +83,9 @@ namespace SkillBot
             }
         }
 
-        public async Task SetSkillPoints(ulong userId, int skillPoints)
+        public async Task SetSkillPoints(ulong userId, int skillPoints, ulong serverID)
         {
+            string connectionString = $"Data Source={Path.Combine(Program.dbDir, $"{serverID}.db")}; Version=3;";
             using (var connection = new SQLiteConnection(connectionString))
             {
                 await connection.OpenAsync();
@@ -95,8 +97,9 @@ namespace SkillBot
             }
         }
 
-        public async Task<int> GetBranchProgress(ulong userId, string branchName)
+        public async Task<int> GetBranchProgress(ulong userId, string branchName, ulong serverID)
         {
+            string connectionString = $"Data Source={Path.Combine(Program.dbDir, $"{serverID}.db")}; Version=3;";
             using (var connection = new SQLiteConnection(connectionString))
             {
                 await connection.OpenAsync();
@@ -110,8 +113,9 @@ namespace SkillBot
             }
         }
 
-        public async Task SetBranchProgress(ulong userId, string branchName, int progress)
+        public async Task SetBranchProgress(ulong userId, string branchName, int progress, ulong serverID)
         {
+            string connectionString = $"Data Source={Path.Combine(Program.dbDir, $"{serverID}.db")}; Version=3;";
             using (var connection = new SQLiteConnection(connectionString))
             {
                 await connection.OpenAsync();
@@ -124,8 +128,9 @@ namespace SkillBot
             }
         }
 
-        public async Task DeleteBranchColumn(string branchName)
+        public async Task DeleteBranchColumn(string branchName, ulong serverID)
         {
+            string connectionString = $"Data Source={Path.Combine(Program.dbDir, $"{serverID}.db")}; Version=3;";
             using (var connection = new SQLiteConnection(connectionString))
             {
                 await connection.OpenAsync();
