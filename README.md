@@ -7,82 +7,80 @@
  ```
 {
     "token": "BOT_TOKEN_HERE",
-    "prefix": "BOT_PREFIX_HERE",
-    "serverID": SERVER_ID_HERE
+    "prefix": "BOT_PREFIX_HERE"
 }
 ```
-Eventually, this will be updated with the ability to use in multiple servers at once, but until then the server ID needs to be specified in the config.
 
 ## Commands
 Arguments with an * are optional
 
 ### Utility
-> Ping
+Ping
 
-Check Latency
+> Check Latency
 
 ### Skill (Admin only)
-> addBranch [Branch Name\]
+addBranch [Branch Name\]
 
-Adds a new skill branch
-
-
-> addSkill [Branch Name\] [Skill Name\]
-
-Adds a new skill to an existing branch
+> Adds a new skill branch
 
 
-> removeSkill [Branch Name\] [Skill Name\]
+addSkill [Branch Name\] [Skill Name\]
 
-Removes a skill from an existing branch
-
-
-> removeBranch [Branch Name\]
-
-Removes a branch
+> Adds a new skill to an existing branch
 
 
->  addSP [Display Name or user @\] [Number\]
+removeSkill [Branch Name\] [Skill Name\]
 
-Adds skill points to a user
-
-
-> setSP [User @\] [Number\]
-
-Sets a users SP
+> Removes a skill from an existing branch
 
 
-> resetSP [User @\]
+removeBranch [Branch Name\]
 
-Sets  a users SP to 0
-
-
-> resetSkillBranch [User @\] [Branch Name\]
-
-Resets a users progress on a specific skill branch
+> Removes a branch
 
 
-> resetAllSkills [User @\]
+addSP [Display Name or user @\] [Number\]
 
-Resets a users progress on all skill branches
+> Adds skill points to a user
+
+
+setSP [User @\] [Number\]
+
+> Sets a users SP
+
+
+resetSP [User @\]
+
+> Sets  a users SP to 0
+
+
+resetSkillBranch [User @\] [Branch Name\]
+
+> Resets a users progress on a specific skill branch
+
+
+resetAllSkills [User @\]
+
+> Resets a users progress on all skill branches
 
 
 ### Skill (All users)
-> checkSP [User @\]*
+checkSP [User @\]*
 
-Checks the number of skill points held by you or a specified user
-
-
-> unlockNext [Branch Name\]
-
-Unlocks the next skill on a branch if a user has the required amount of SP
+> Checks the number of skill points held by you or a specified user
 
 
-> listSkills
+unlockNext [Branch Name\]
 
-Lists all skills and branches and marks those which have been unlocked
+> Unlocks the next skill on a branch if a user has the required amount of SP
 
 
-> checkSkills [Branch Name\]
+listSkills
 
-Lists all unlocked skills on a specific branch 
+> Lists all skills and branches and marks those which have been unlocked
+
+
+checkSkills [Branch Name\]
+
+> Lists all unlocked skills on a specific branch 
