@@ -1,11 +1,5 @@
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8603 // Possible null reference return.
-#pragma warning disable CS8604 // Possible null reference argument.
-#pragma warning disable CS8601 // Possible null reference assignment.
 #pragma warning disable CS8605 // Unboxing a possibly null value.
 
-
-using System.Reflection;
 using System.Data.SQLite;
 
 namespace SkillBot

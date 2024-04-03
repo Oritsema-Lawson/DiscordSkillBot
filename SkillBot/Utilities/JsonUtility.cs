@@ -2,9 +2,10 @@
 #pragma warning disable CS8603 // Possible null reference return.
 #pragma warning disable CS8604 // Possible null reference argument.
 
-using System.Reflection;
-using System.IO;
 using Newtonsoft.Json;
+using DSharpPlus;
+using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 
 
 namespace SkillBot
@@ -14,7 +15,6 @@ namespace SkillBot
         // Properties to store configuration values
         public string? Token { get; private set; } 
         public string? Prefix { get; private set; }
-        public ulong ServerID { get; private set; }
 
         // Gets program directory
         public string? treeDirectory = Program.treeDir;
@@ -47,12 +47,38 @@ namespace SkillBot
                         writer.Indentation = 4; 
                         writer.IndentChar = ' '; 
 
-                        serializer.Serialize(writer, new ConfigStructure());
+                        ConfigStructure config = new ConfigStructure() {
+                            token = "$TOKEN",
+                            prefix = "$PREFIX"
+                        };
 
+                        serializer.Serialize(writer, config);
+                        await writer.FlushAsync();
+                        await Task.Delay(1000);
+                        await writer.CloseAsync();
                         Environment.Exit(0);
                     }
                 }
                 ConfigStructure? data = JsonConvert.DeserializeObject<ConfigStructure>(json);
+
+                if(data.token == "$TOKEN")
+                {
+                    Console.WriteLine("[JSONUTILITY] Please set token in config before relaunching.");
+                    Environment.Exit(0);
+                }
+                
+                Console.WriteLine($"[JSONUTILITY] Checking token format...");
+                bool isTokenCorrect = Regex.IsMatch(data.token, @"^[A-Za-z0-9\-]{0,200}\.[A-Za-z0-9\-]{0,200}\.[A-Za-z0-9\-]{0,200}$"); 
+
+                if(isTokenCorrect)
+                {
+                    await CheckToken(data.token);
+                }
+                else
+                {
+                    Console.WriteLine("[JSONUTILITY] Malformed token.");
+                    Environment.Exit(0);
+                }
 
                 this.Token = data.token;
                 this.Prefix = data.prefix;
@@ -69,7 +95,6 @@ namespace SkillBot
                 using (StreamReader reader = new StreamReader(Path.Combine(Program.treeDir, $"{ID}.json"))) 
                 {
                     string json = await reader.ReadToEndAsync();
-                    //Console.WriteLine(json); 
                     return JsonConvert.DeserializeObject<Tree>(json);
                 }
             }
@@ -99,10 +124,38 @@ namespace SkillBot
                     writer.IndentChar = ' '; 
 
                     serializer.Serialize(writer, tree);
+                    writer.Flush();
                 }
             });  
 
             Console.WriteLine($"[JSONUTILITY] Tree {ID}.json has been written!");
+        }
+
+        public async Task CheckToken(string token) 
+        {
+            Console.WriteLine("[JSONUTILITY] Checking token validity...");
+            try
+            {
+                var discordClient = new DiscordClient(new DiscordConfiguration()
+                {
+                    Token = token,
+                    TokenType = TokenType.Bot,
+                    MinimumLogLevel = LogLevel.Critical
+                    
+                });
+
+                await discordClient.ConnectAsync();
+                await discordClient.DisconnectAsync();
+
+                Console.WriteLine("[JSONUTILITY] Token valid!");
+
+                return; 
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("[JSONUTILITY] Invalid token or connection problem.");
+                Environment.Exit(0);
+            }
         }
     }
 

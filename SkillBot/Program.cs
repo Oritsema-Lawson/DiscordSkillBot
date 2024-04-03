@@ -1,13 +1,11 @@
 ﻿#pragma warning disable CS8602 // Dereference of a possibly null reference.
-#pragma warning disable CS8603 // Possible null reference return.
 #pragma warning disable CS8604 // Possible null reference argument.
 #pragma warning disable CS8601 // Possible null reference assignment.
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 
 using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-
+using Microsoft.Extensions.Logging;
 
 namespace SkillBot
 {
@@ -39,7 +37,10 @@ namespace SkillBot
 
         static async Task Main(string[] args)
         {
-            // Create folders
+            // Load config from JSON
+            await jsonUtility.ReadConfig();
+
+            // Create folders for trees and databases
             if(!Directory.Exists(dbDir))
             {
                 Directory.CreateDirectory(dbDir);
@@ -50,19 +51,14 @@ namespace SkillBot
                 Directory.CreateDirectory(treeDir);
             }
 
-            // Load config from JSON
-            await jsonUtility.ReadConfig();
-
-            serverID = jsonUtility.ServerID;
-            Console.WriteLine(serverID);
-
-            // Discord bot configuration (using a placeholder token, can use jsonUtility to get token from config file)
+            // Discord bot configuration
             DiscordConfiguration config = new DiscordConfiguration()
             {
                 Intents = DiscordIntents.All,
                 Token = jsonUtility.Token,
                 TokenType = TokenType.Bot,
-                AutoReconnect = true
+                AutoReconnect = true,
+                MinimumLogLevel = LogLevel.Warning
             };
 
             // CommandsNext configuration
@@ -108,7 +104,7 @@ namespace SkillBot
         // Event handler for when the client is connected
         private static async Task ClientReady(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs args)
         {
-            Console.WriteLine("Client Ready!");
+            Console.WriteLine("[PROGRAM] Client Ready!");
 
             await Task.Delay(5000);
             
@@ -134,7 +130,7 @@ namespace SkillBot
 
                 serverList[ID] = serverData; 
 
-                Console.WriteLine(ID + " Initialized!");
+                Console.WriteLine("[PROGRAM] Server Initializing..." + ID);
 
                 try
                 {
@@ -151,19 +147,19 @@ namespace SkillBot
                             {
                                 serverList[ID].tree.existingUsers.Add(member.Id);
                                 await databaseUtility.AddUserIfNotExists(member.Id, ID);  
-                                Console.WriteLine($"Adding user {member.DisplayName} to server {guild.Name}");
+                                Console.WriteLine($"[PROGRAM] Adding user {member.DisplayName} to server {guild.Name}");
                             }
                         }
 
                         if(!String.IsNullOrEmpty(guild.Name))
                         {
-                            Console.WriteLine($"Success!, Server Name: {guild.Name} Initialized!");
+                            Console.WriteLine($"[PROGRAM] Success!, Server: {guild.Name} Initialized!");
                             success = true; 
                         } 
 
                         else if(!success)
                         {
-                            Console.WriteLine($"Error getting guild (attempt {retries + 1})");
+                            Console.WriteLine($"[PROGRAM] Error getting guild (attempt {retries + 1})");
                             await Task.Delay(2000); // Delay between retries
                             retries++;
                         }
@@ -171,7 +167,7 @@ namespace SkillBot
 
                     if (!success) 
                     {
-                        Console.WriteLine("Failed to initialize guild after 5 retries.");
+                        Console.WriteLine("[PROGRAM] Failed to initialize guild after 5 retries.");
                     }
                     else
                     {
@@ -180,12 +176,12 @@ namespace SkillBot
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"Failed to initialize users... {e.Message}");
+                    Console.WriteLine($"[PROGRAM] Failed to initialize users... {e.Message}");
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Failed to initialize server {ID}.");
+                Console.WriteLine($"[PROGRAM] Failed to initialize server {ID}.");
                 Console.WriteLine(e.Message);
             }
         }
