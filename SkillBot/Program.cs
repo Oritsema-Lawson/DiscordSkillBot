@@ -5,6 +5,7 @@
 using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.Logging;
 
 namespace SkillBot
@@ -25,9 +26,8 @@ namespace SkillBot
         public static DiscordClient? Client { get; private set; }
         private static CommandsNextExtension? Commands { get; set; }
 
-        // Server Name and ID
-        public static string serverName = "";
-        public static ulong serverID = 0;
+        // Server ID
+        public static ulong CurrentServerID = 0;
 
         // Static instance of the JsonUtility class 
         public static JsonUtility jsonUtility = new JsonUtility();
@@ -58,7 +58,7 @@ namespace SkillBot
                 Token = jsonUtility.Token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-                MinimumLogLevel = LogLevel.Warning
+                MinimumLogLevel = LogLevel.Information
             };
 
             // CommandsNext configuration
@@ -93,10 +93,14 @@ namespace SkillBot
             Commands = Client.UseCommandsNext(commandsConfig);
             Commands.RegisterCommands<UtilityCommands>();
             Commands.RegisterCommands<SkillCommands>();
+            
+            var slash = Client.UseSlashCommands();
+            slash.RegisterCommands<SkillSlashCommands>();
 
             // Connect the bot 
             await Client.ConnectAsync();
-
+            
+            
             // Keep the program running
             await Task.Delay(-1);
         }
@@ -106,7 +110,7 @@ namespace SkillBot
         {
             Console.WriteLine("[PROGRAM] Client Ready!");
 
-            await Task.Delay(5000);
+            await Task.Delay(2000);
             
             serverIDs = Client.Guilds.Keys.ToList();
 

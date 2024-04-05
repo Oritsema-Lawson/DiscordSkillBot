@@ -18,7 +18,7 @@ namespace SkillBot
 
 
         [Command("addBranch")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task AddBranch(CommandContext ctx, string _branchName, string _branchDesc = " ")
         {
             if (_slist[ctx.Guild.Id].tree.branches.Any(b => b.branchName.Equals(_branchName, StringComparison.OrdinalIgnoreCase)))
@@ -35,7 +35,7 @@ namespace SkillBot
         }
 
         [Command("addSkill")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task AddSkill(CommandContext ctx, string _branchName, string _skillName, string _skillDescription, int _skillCost = 0)
         {
             int branchIndex = _slist[ctx.Guild.Id].tree.branches.FindIndex(b => b.branchName == _branchName);
@@ -62,7 +62,7 @@ namespace SkillBot
         }
 
         [Command("removeSkill")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task RemoveSkill(CommandContext ctx, string _branchName, string _skillName)
         {
             int branchIndex = _slist[ctx.Guild.Id].tree.branches.FindIndex(b => b.branchName == _branchName);
@@ -89,7 +89,7 @@ namespace SkillBot
         }
 
         [Command("removeBranch")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task RemoveBranch(CommandContext ctx, string _branchName)
         {
             int branchIndex = _slist[ctx.Guild.Id].tree.branches.FindIndex(b => b.branchName == _branchName);
@@ -112,7 +112,7 @@ namespace SkillBot
         }
 
         [Command("addSP")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task AddSP(CommandContext ctx, DiscordMember user, int points)
         {
             var message = await ctx.RespondAsync("Adding SP...");
@@ -126,7 +126,7 @@ namespace SkillBot
         }
 
         [Command("addSP")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task AddSP(CommandContext ctx, string username, int points)
         {
             var message = await ctx.RespondAsync("Searching for User...");
@@ -158,7 +158,7 @@ namespace SkillBot
         }
 
         [Command("resetSP")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task ResetSP(CommandContext ctx, DiscordMember user)
         {
             var message = await ctx.RespondAsync("Resetting SP...");
@@ -168,7 +168,7 @@ namespace SkillBot
         }
 
         [Command("setSP")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task SetSP(CommandContext ctx, DiscordMember user, int points)
         {
             var message = await ctx.RespondAsync("Setting SP...");
@@ -178,7 +178,7 @@ namespace SkillBot
         }
 
         [Command("resetSkillBranch")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task ResetSkillBranch(CommandContext ctx, DiscordMember user, string branchName)
         {
             var message = await ctx.RespondAsync("Resetting branch...");
@@ -188,7 +188,7 @@ namespace SkillBot
         }
 
         [Command("resetAllSkills")]
-        [RequirePermissions(Permissions.Administrator)]
+        [RequirePermissions(Permissions.ManageChannels)]
         public async Task ResetAllSkills(CommandContext ctx, DiscordMember user)
         {
             var message = await ctx.RespondAsync("Resetting all skills...");

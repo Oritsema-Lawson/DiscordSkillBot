@@ -68,7 +68,7 @@ namespace SkillBot
                 }
                 
                 Console.WriteLine($"[JSONUTILITY] Checking token format...");
-                bool isTokenCorrect = Regex.IsMatch(data.token, @"^[A-Za-z0-9\-]{0,200}\.[A-Za-z0-9\-]{0,200}\.[A-Za-z0-9\-]{0,200}$"); 
+                bool isTokenCorrect = Regex.IsMatch(data.token, @"^[^\.]+\.[^\.]+\.[^\.]+$"); 
 
                 if(isTokenCorrect)
                 {
